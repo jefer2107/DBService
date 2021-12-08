@@ -1,15 +1,8 @@
-const configDatabaseMysql = require("./configDatabase")
-const querySqlServer = require("./querySqlserver")
+const querySqlServer = require("../querySqlserver")
 
-// configDatabaseMysql({
-//     host: 'localhost',
-//     user: 'root',
-//     database: 'querySqlserver'
-// })
-
-const factoryControllerClients = ()=>{
+const factoryControllerCourses = ()=>{
     const options = {
-        route: 'clients',
+        route: 'courses',
         orderBy: 'id'
     }
 
@@ -24,8 +17,8 @@ const factoryControllerClients = ()=>{
 
     const create = (req,res)=>{
         const body = {
-            columns: ['date','name','age'],
-            values: [new Date(),req.body.name,req.body.age]
+            columns: ['date','name'],
+            values: [new Date(),req.body.name]
         }
 
         querySqlServer(req).insert(options,body).then((result)=>{
@@ -47,11 +40,21 @@ const factoryControllerClients = ()=>{
         })
     }
 
+    const removeItem = (req,res)=>{
+        querySqlServer(req).deleteItem(options).then((result)=>{
+            res.status(200).send(result)
+
+        }).catch((error)=>{
+            res.status(500).send(error)
+        })
+    }
+
     return{
         getAll,
         create,
-        getOne
+        getOne,
+        removeItem
     }
 }
 
-module.exports = factoryControllerClients
+module.exports = factoryControllerCourses

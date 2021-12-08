@@ -1,4 +1,3 @@
-const configDatabaseMysql = require('./configDatabase')
 const mysql2 = require('mysql2')
 
 const querySqlServer = (req)=>{
