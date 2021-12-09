@@ -49,11 +49,27 @@ const factoryControllerClients = ()=>{
         })
     }
 
+    const addForeignKey = (req,res)=>{
+        const body = {
+            foreignKey: req.body.foreignKey,
+            id: req.body.id
+        }
+
+        querySqlServer(req).updateTableForeignKey(options,body).then((result)=>{
+            res.status(200).send(result)
+
+        }).catch((error)=>{
+            res.status(500).send(error)
+
+        })
+    }
+
     return{
         getAll,
         create,
         getOne,
-        removeItem
+        removeItem,
+        addForeignKey
     }
 }
 
