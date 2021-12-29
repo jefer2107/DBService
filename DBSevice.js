@@ -303,8 +303,6 @@ const DBSevice = (options)=>{
         return new Promise((res,rej)=>{
             let query;
             let newBody = (!body.columns?'*':body.columns.toString())
-            let newBodyJson = JSON.stringify(newBody)
-            console.log('newBody ',newBodyJson)
 
             if(newBody !== "*"){
                 
@@ -362,22 +360,6 @@ const DBSevice = (options)=>{
         
     }
 
-    const alterTableForeignKey = (body)=>{
-        const foreignKey = body.foreignKey
-        const references = body.references
-        const field = body.field
-
-        return new Promise((res,rej)=>{
-            connection.query(`alter table ${table} add foreign key(${foreignKey}) references ${references}${(field)}`,
-            (error,result)=>{
-
-                if(error) return rej(error)
-    
-                return res(result)
-            })
-        })
-    }
-
     return {
         createTable,
         descTable,
@@ -397,7 +379,6 @@ const DBSevice = (options)=>{
         updateChange,
         selectJoin,
         alterTableAddColumn,
-        alterTableForeignKey,
         connection
     }
 }
