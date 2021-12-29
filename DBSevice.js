@@ -12,6 +12,8 @@ const DBSevice = (options)=>{
     //Table
 
     const createTable = (body)=>{
+        body.unshift("id int auto_increment")
+        body.push("primary key(id)")
         const columns = body.toString()
         console.log('createTable columns :',columns)
 
@@ -344,22 +346,6 @@ const DBSevice = (options)=>{
         })
     }
 
-    const alterTableAddColumn = (body)=>{
-        const column = body.column
-        const position = body.position
-
-        return new Promise((res,rej)=>{
-            connection.query(`alter table ${table} add column ${column} ${position}`,
-            (error,result)=>{
-
-                if(error) return rej(error)
-    
-                return res(result)
-            })
-        })
-        
-    }
-
     return {
         createTable,
         descTable,
@@ -378,7 +364,6 @@ const DBSevice = (options)=>{
         updateTableForeignKey,
         updateChange,
         selectJoin,
-        alterTableAddColumn,
         connection
     }
 }

@@ -48,13 +48,11 @@ const controllerFactoryClients = ()=>{
 
     const addTable = (req,res)=>{
         const body = [
-            req.body.id,
             req.body.date,
             req.body.name,
             req.body.address,
             req.body.email,
-            req.body.telephone,
-            req.body.primaryKey
+            req.body.telephone
         ]
 
         dbService.createTable(body).then((result)=>{

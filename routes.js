@@ -1,13 +1,27 @@
 
 
 const routes = (app)=>{
-    const factoryControllerClients = require('./controllers/clients')
+    const controllerFactoryClients = require('./controllers/clients')
+    const factoryClients = controllerFactoryClients()
     //clients
-    app.get('/clients',factoryControllerClients().getAll)
-    app.get('/clients/:id',factoryControllerClients().getOne)
-    app.post('/clients',factoryControllerClients().create)
-    app.delete('/clients/:id',factoryControllerClients().removeItem)
-    app.patch('/clients/addForeignKey/:id',factoryControllerClients().addForeignKey)
+
+    app.get('/clients/describeTable',factoryClients.describeTable)
+    app.put('/clients/renameTable',factoryClients.renameTable)
+    app.delete('/clients/deleteTable',factoryClients.deleteTable)
+    app.post('/clients/addTable',factoryClients.addTable)
+    app.put('/clients/addColumn',factoryClients.addColumn)
+    app.delete('/clients/deleteColumn',factoryClients.deleteColumn)
+    app.put('/clients/changeColumn',factoryClients.changeColumn)
+    app.patch('/clients/renameColumn',factoryClients.renameColumn)
+    app.put('/clients/createForeignKey',factoryClients.createForeignKey)
+    app.get('/clients',factoryClients.getAll)
+    app.post('/clients',factoryClients.create)
+    app.delete('/clients/:id/removeItem',factoryClients.removeItem)
+    app.get('/clients/:id/getItem',factoryClients.getOne)
+    app.patch('/clients/:id/relateProject/',factoryClients.relateProject)
+    app.put('/clients/:id/changeAll',factoryClients.changeAll)
+    app.patch('/clients/:id/changeOne',factoryClients.changeOne)
+    app.put('/clients/createAndAddForeignKey',factoryClients.createAndAddForeignKey)
 
     //courses
     const factoryControllerCourses = require('./controllers/courses')
