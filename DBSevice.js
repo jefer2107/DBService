@@ -190,11 +190,10 @@ const DBSevice = (options)=>{
         
     }
 
-    const insert = (data)=>{
-        const columns = data.columns
-        const columnsStringify = JSON.stringify(columns)
-        const setColumns = columnsStringify.replace("[","").replace("]","").replace(/"/g,"")
-        const values = data.values
+    const insert = (body)=>{
+        const columns = body.columns
+        const setColumns = columns.toString()
+        const values = body.values
         let columnsLength = columns.length
 
         return new Promise((res,rej)=>{
@@ -216,8 +215,11 @@ const DBSevice = (options)=>{
                     connection.query(`insert into ${table}(${setColumns})values(${setValues})`,
                     values,(error,result)=>{
 
-                        if(error) return rej(error)
-    
+                        if(error)
+                        {
+                            return rej(error)
+                        }
+        
                         return res(result)
                     })
                 }
