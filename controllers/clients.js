@@ -25,6 +25,26 @@ const factoryControllerClients = ()=>{
         })
     }
 
+    const descTable = ()=>{
+        return new Promise((res,rej)=>{
+            connection.query(`desc ${table}`,(error,result)=>{
+                if(error) return rej(error)
+
+                return res(result)
+            })
+        })
+    }
+
+    const alterTableRenameTo = (body)=>{
+        return new Promise((res,rej)=>{
+            connection.query(`alter table ${table} rename to ${body.table}`,(error,result)=>{
+                if(error) return rej(error)
+
+                return res(result)
+            })
+        })
+    }
+
     const getAll = (req,res)=>{
         dbService.selectAll().then((result)=>{
             res.status(200).send(result)
@@ -90,6 +110,8 @@ const factoryControllerClients = ()=>{
 
     return{
         createTable,
+        descTable,
+        alterTableRenameTo,
         getAll,
         create,
         getOne,
