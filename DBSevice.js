@@ -231,7 +231,6 @@ const DBSevice = (options)=>{
     }
 
     const deleteItem = (id)=>{
-
         return new Promise((res,rej)=>{
             connection.query(`delete from ${table} where id=${id}`,
             (error,result)=>{
@@ -244,7 +243,6 @@ const DBSevice = (options)=>{
     }
 
     const selectOne = (id)=>{
-        
         return new Promise((res,rej)=>{
             connection.query(`select * from ${table} where id=${id}`,
             (error,result)=>{
@@ -270,6 +268,35 @@ const DBSevice = (options)=>{
             })
         })
         
+    }
+
+    const updateChange = (body,id)=>{
+        const columns = body.columns
+        const values = body.values
+
+        return new Promise((res,rej)=>{
+            let fields = []
+            let string;
+
+            for(let i=0; i < columns.length; ++i){
+                string = `${columns[i]}='${values[i]}'`
+
+                fields.push(string)
+
+                const fieldsString = fields.toString()
+
+                if(fields.length == columns.length){
+            
+                    connection.query(`update ${table} set ${fieldsString} where id=${id}`,
+                    (error,result)=>{
+
+                        if(error) return rej(error)
+
+                        return res(result)
+                    })
+                }
+            }
+        })
     }
 
     const alterTableAddColumn = (body)=>{
@@ -319,9 +346,10 @@ const DBSevice = (options)=>{
         insert,
         deleteItem,
         selectOne,
+        updateTableForeignKey,
+        updateChange,
         alterTableAddColumn,
         alterTableForeignKey,
-        updateTableForeignKey,
         connection
     }
 }
