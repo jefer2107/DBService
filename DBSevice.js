@@ -80,12 +80,14 @@ const DBSevice = (options)=>{
     }
 
     const alterTableForeignKey = (body)=>{
-        const foreignKey = body.foreignKey
-        const references = body.TableReferences
-        const field = body.field
+        const newBody = {...body,field:'id'}
+        console.log('alterTableForeignKey newBody:',newBody)
+        const column = newBody.column
+        const references = newBody.TableReferences
+        const field = newBody.field
 
         return new Promise((res,rej)=>{
-            connection.query(`alter table ${table} add foreign key(${foreignKey}) references ${references}(${field})`,
+            connection.query(`alter table ${table} add foreign key(${column}) references ${references}(${field})`,
             (error,result)=>{
 
                 if(error)

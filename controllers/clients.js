@@ -147,9 +147,8 @@ const controllerFactoryClients = ()=>{
 
     const createForeignKey = (req,res)=>{
         const body = {
-            foreignKey: 'idProjects',
-            references: 'projects',
-            field: 'id'
+            column: req.body.column,
+            TableReferences: req.body.references
         }
 
         dbService.alterTableForeignKey(body).then((result)=>{
