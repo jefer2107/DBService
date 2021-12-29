@@ -82,8 +82,8 @@ const DBSevice = (options)=>{
     const alterTableForeignKey = (body)=>{
         const newBody = {...body,field:'id'}
         console.log('alterTableForeignKey newBody:',newBody)
-        const column = newBody.column
-        const references = newBody.TableReferences
+        const column = newBody.foreignKey
+        const references = newBody.tableReferences
         const field = newBody.field
 
         return new Promise((res,rej)=>{
@@ -101,8 +101,10 @@ const DBSevice = (options)=>{
     }
 
     const createColumnForForeignKey = (body)=>{
+        console.log('body:',body)
         const foreignKey = body.column.replace(" int","")
         const newBody = {...body,foreignKey}
+        console.log('newBody:',newBody)
         let resultAddColumn;
         let resultTableForeignKey;
 

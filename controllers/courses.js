@@ -1,65 +1,293 @@
-const DBSevice = require("../DBSevice")
+const DBSevice = require('../DBSevice')
+const {response, emailFormat} = require('../response')
 
 const factoryControllerCourses = ()=>{
     const options = {
         table: 'courses',
-        orderBy: 'id'
+        orderBy: 'id' 
     }
 
     let dbService = DBSevice(options)
 
-    const getAll = (req,res)=>{
-        dbService.selectAll(options).then((result)=>{
-            res.status(200).send(result)
+    //Table
+
+    const describeTable = (req,res)=>{
+        dbService.descTable().then((result)=>{
+            response(res).send(result)
 
         }).catch((error)=>{
-            res.status(500).send(error)
+            response(res).error()
+            console.log(error)
         })
     }
 
-    const create = (req,res)=>{
+    const renameTable = (req,res)=>{
         const body = {
-            columns: ['date','name'],
-            values: [new Date(),req.body.name]
+            table: req.body.table
         }
 
-        dbService.insert(body).then((result)=>{
-            res.status(200).send(result)
-            
+        dbService.alterTableRenameTo(body).then((result)=>{
+            response(res).send(result)
+
         }).catch((error)=>{
-            res.status(500).send(error)
+            response(res).error()
             console.log(error)
+        })
+    }
+
+    const deleteTable = (req,res)=>{
+        dbService.dropTable().then((result)=>{
+            response(res).send(result)
+
+        }).catch((error)=>{
+            response(res).error()
+            console.log(error)
+
+        })
+    }
+
+    const addTable = (req,res)=>{
+        const body = [
+            req.body.date,
+            req.body.name,
+            req.body.address,
+            req.body.email,
+            req.body.telephone
+        ]
+
+        dbService.createTable(body).then((result)=>{
+            response(res).send(result)
+
+        }).catch((error)=>{
+            response(res).error()
+            console.log(error)
+
+        })
+    }
+
+    //Columns
+
+    const addColumn = (req,res)=>{
+        const body = {
+            column: req.body.column,
+            position: req.body.position,
+            of: req.body.of
+        }
+
+        dbService.alterTableAddColumn(body).then((result)=>{
+            response(res).send(result)
+
+        }).catch((error)=>{
+            response(res).error()
+            console.log(error)
+
+        })
+    }
+
+    const deleteColumn = (req,res)=>{
+        const body = {
+            column: req.body.column
+        }
+
+        dbService.dropColumn(body).then((result)=>{
+            response(res).send(result)
+
+        }).catch((error)=>{
+            response(res).error()
+            console.log(error)
+
+        })
+    }
+
+    const changeColumn = (req,res)=>{
+        const body = {
+            column: req.body.column
+        }
+
+        dbService.modifyColumn(body).then((result)=>{
+            response(res).send(result)
+
+        }).catch((error)=>{
+            response(res).error()
+            console.log(error)
+
+        })
+    }
+
+    const renameColumn = (req,res)=>{
+        const body = {
+            column: req.body.column,
+            to: req.body.to
+        }
+
+        dbService.changeColumn(body).then((result)=>{
+            response(res).send(result)
+
+        }).catch((error)=>{
+            response(res).error()
+            console.log(error)
+        })
+    }
+
+    const createForeignKey = (req,res)=>{
+        const body = {
+            column: req.body.column,
+            TableReferences: req.body.references
+        }
+
+        dbService.alterTableForeignKey(body).then((result)=>{
+            response(res).send(result)
+
+        }).catch((error)=>{
+            response(res).error()
+            console.log(error)
+
+        })
+    }
+
+    //Values
+
+    const getAll = (req,res)=>{
+        dbService.selectAll().then((result)=>{
+            response(res).send(result)
+
+        }).catch((error)=>{
+            response(res).error()
+            console.log(error)
+
         })
         
     }
 
-    const getOne = (req,res)=>{
-        const id = req.params.id
+    const create = (req,res)=>{
+        const body = {
+            columns: ['date','name','address','email','telephone'],
+            values: [new Date(),req.body.name,req.body.address,req.body.email,req.body.telephone]
+        }
 
-        dbService.selectOne(id).then((result)=>{
-            res.status(200).send(result)
+        emailFormat(req.body.email)
 
+        dbService.insert(body).then((result)=>{
+            response(res).send(result)
+            
         }).catch((error)=>{
-            res.status(500).send(error)
+            response(res).error()
+            console.log(error)
         })
+        
     }
 
     const removeItem = (req,res)=>{
         const id = req.params.id
 
         dbService.deleteItem(id).then((result)=>{
-            res.status(200).send(result)
+            response(res).send(result)
 
         }).catch((error)=>{
-            res.status(500).send(error)
+            response(res).error()
+            console.log(error)
         })
     }
 
-    return{
+    const getOne = (req,res)=>{
+        const id = req.params.id
+
+        dbService.selectOne(id).then((result)=>{
+            response(res).send(result)
+            
+        }).catch((error)=>{
+            response(res).error()
+            console.log(error)
+
+        })
+    }
+
+    const relateCourse = (req,res)=>{
+        const id = req.params.id
+        const body = {
+            column: req.body.column,
+            id: req.body.id
+        }
+
+        dbService.updateTableForeignKey(body,id).then((result)=>{
+            response(res).send(result)
+
+        }).catch((error)=>{
+            response(res).error()
+            console.log(error)
+
+        })
+    }
+
+    const changeAll = (req,res)=>{
+        const body = {
+            columns:['name','address','email','telephone'],
+            values:[req.body.name,req.body.address,req.body.email,req.body.telephone]
+        }
+
+        const id = req.params.id
+
+        dbService.updateChange(body,id).then((result)=>{
+            response(res).send(result)
+
+        }).catch((error)=>{
+            response(res).error()
+            console.log(error)
+
+        })
+    }
+
+    const changeOne = (req,res)=>{
+        const body = {
+            columns:['name'],
+            values:[req.body.name]
+        }
+
+        const id = req.params.id
+
+        dbService.updateChange(body,id).then((result)=>{
+            response(res).send(result)
+
+        }).catch((error)=>{
+            response(res).error()
+            console.log(error)
+
+        })
+    }
+
+    const createAndAddForeignKey = (req,res)=>{
+        const body = {
+            column: req.body.column,
+            TableReferences: req.body.TableReferences
+        }
+
+        dbService.createColumnForForeignKey(body).then((result)=>{
+            response(res).send(result)
+
+        }).catch((error)=>{
+            response(res).error()
+            console.log(error)
+        })
+    }
+
+    return {
+        describeTable,
+        renameTable,
+        deleteTable,
+        addTable,
+        addColumn,
+        deleteColumn,
+        changeColumn,
+        renameColumn,
+        createForeignKey,
         getAll,
         create,
+        removeItem,
         getOne,
-        removeItem
+        relateCourse,
+        changeAll,
+        changeOne,
+        createAndAddForeignKey
     }
 }
 

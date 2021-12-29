@@ -84,22 +84,6 @@ const controllerFactoryClients = ()=>{
         })
     }
 
-    const createAndAddForeignKey = (req,res)=>{
-        const body = {
-            column: req.body.column,
-            TableReferences: req.body.TableReferences,
-            field: req.body.field
-        }
-
-        dbService.createColumnForForeignKey(body).then((result)=>{
-            response(res).send(result)
-
-        }).catch((error)=>{
-            response(res).error()
-            console.log("clients error: ",error)
-        })
-    }
-
     const deleteColumn = (req,res)=>{
         const body = {
             column: req.body.column
@@ -147,8 +131,8 @@ const controllerFactoryClients = ()=>{
 
     const createForeignKey = (req,res)=>{
         const body = {
-            column: req.body.column,
-            TableReferences: req.body.references
+            foreignKey: req.body.foreignKey,
+            tableReferences: req.body.references
         }
 
         dbService.alterTableForeignKey(body).then((result)=>{
@@ -218,7 +202,7 @@ const controllerFactoryClients = ()=>{
         })
     }
 
-    const relateProject = (req,res)=>{
+    const relateCourse = (req,res)=>{
         const id = req.params.id
         const body = {
             column: req.body.column,
@@ -237,8 +221,8 @@ const controllerFactoryClients = ()=>{
 
     const changeAll = (req,res)=>{
         const body = {
-            columns:['date','name','address','email','telephone'],
-            values:[req.body.date,req.body.name,req.body.address,req.body.email,req.body.telephone]
+            columns:['name','address','email','telephone'],
+            values:[req.body.name,req.body.address,req.body.email,req.body.telephone]
         }
 
         const id = req.params.id
@@ -255,8 +239,8 @@ const controllerFactoryClients = ()=>{
 
     const changeOne = (req,res)=>{
         const body = {
-            columns:['idPojects'],
-            values:[req.body.idPojects]
+            columns:['name'],
+            values:[req.body.name]
         }
 
         const id = req.params.id
@@ -268,6 +252,21 @@ const controllerFactoryClients = ()=>{
             response(res).error()
             console.log(error)
 
+        })
+    }
+
+    const createAndAddForeignKey = (req,res)=>{
+        const body = {
+            column: req.body.column,
+            tableReferences: req.body.tableReferences
+        }
+
+        dbService.createColumnForForeignKey(body).then((result)=>{
+            response(res).send(result)
+
+        }).catch((error)=>{
+            response(res).error()
+            console.log(error)
         })
     }
 
@@ -285,7 +284,7 @@ const controllerFactoryClients = ()=>{
         create,
         removeItem,
         getOne,
-        relateProject,
+        relateCourse,
         changeAll,
         changeOne,
         createAndAddForeignKey
