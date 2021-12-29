@@ -56,6 +56,27 @@ const factoryControllerClients = ()=>{
         })
     }
 
+    //Columns
+
+    const alterTableAddColumn = (body)=>{
+        const column = body.column
+        const position = (!body.position?'':body.position)
+        const of = (!body.of?'':body.of)
+
+        return new Promise((res,rej)=>{
+            connection.query(`alter table ${table} add column ${column} ${position} ${of}`,(error,result)=>{
+
+                if(error)
+                {
+                    return rej(error)
+                }
+
+                return res(result)
+            })
+        })
+        
+    }
+
     const getAll = (req,res)=>{
         dbService.selectAll().then((result)=>{
             res.status(200).send(result)
