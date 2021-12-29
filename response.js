@@ -16,6 +16,7 @@ const response = (res)=>{
 const emailFormat = (email)=>{
     const characters = ['@','.','com']
     if(!email) throw Error('email not informed')
+    if(email.length > 30) throw Error('Email cannot contain more than 30 characters')
     
     characters.map(e=> {if(!email.includes(e)) 
         throw Error(`this email format does not exist`)})

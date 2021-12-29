@@ -164,9 +164,7 @@ const controllerFactoryClients = ()=>{
     //Values
 
     const getAll = (req,res)=>{
-        const body = [req.body.columns]
-
-        dbService.selectAll(body).then((result)=>{
+        dbService.selectAll().then((result)=>{
             response(res).send(result)
 
         }).catch((error)=>{
