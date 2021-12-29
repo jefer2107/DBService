@@ -158,6 +158,18 @@ const factoryControllerClients = ()=>{
         })
     }
 
+    const dropColumn = (body)=>{
+        return new Promise((res,rej)=>{
+            connection.query(`alter table ${table} drop column ${body.column}`,
+            (error,result)=>{
+
+                if(error) return rej(error)
+
+                return res(result)
+            })
+        })
+    }
+
     const getAll = (req,res)=>{
         dbService.selectAll().then((result)=>{
             res.status(200).send(result)
@@ -231,6 +243,7 @@ const factoryControllerClients = ()=>{
         createColumnForForeignKey,
         modifyColumn,
         changeColumn,
+        dropColumn,
         getAll,
         create,
         getOne,
