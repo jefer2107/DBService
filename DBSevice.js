@@ -299,6 +299,53 @@ const DBSevice = (options)=>{
         })
     }
 
+    const selectJoin = (body,table1,table2=null)=>{
+        return new Promise((res,rej)=>{
+            let query;
+            let newBody = (!body.columns?'*':body.columns.toString())
+            let newBodyJson = JSON.stringify(newBody)
+            console.log('newBody ',newBodyJson)
+
+            if(newBody !== "*"){
+                
+                if(!table2){
+                    console.log('query1 simple: ',query)
+                    query = `select ${newBody} from ${table} join ${table1} 
+                    on ${table}.${body.foreignkey}=${table}.id${(!body.orderBy?"":" order by "+body.orderBy)}`
+
+                }else{
+                    console.log('query2 multiple: ',query)
+                    query = `select ${newBody} from ${table1} join ${table} 
+                    on ${table1}.id=${table}.${body.foreignkey} join ${table2} 
+                    on ${table}.${body.foreignkey2} = ${table2}.id${(!body.orderBy?"":" order by "+body.orderBy)}`
+                }
+                
+            }else{
+                
+                if(!table2){
+                    query = `select ${newBody} from ${table} join ${table1} 
+                    on ${table}.${body.foreignkey}=${table}.id${(!body.orderBy?"":" order by "+body.orderBy)}`
+                    console.log('queryAll simple: ',query)
+
+                }else{
+                    query = `select ${newBody} from ${table1} join ${table} 
+                    on ${table1}.id=${table}.${body.foreignkey} join ${table2} 
+                    on ${table}.${body.foreignkey2} = ${table2}.id${(!body.orderBy?"":" order by "+body.orderBy)}`
+                    console.log('queryAll multiple: ',query)
+                }
+
+            }
+
+            connection.query(`${query}`,
+            (error,result)=>{
+                if(error) return rej(error)
+
+                return res(result)
+            })
+            
+        })
+    }
+
     const alterTableAddColumn = (body)=>{
         const column = body.column
         const position = body.position
@@ -348,6 +395,7 @@ const DBSevice = (options)=>{
         selectOne,
         updateTableForeignKey,
         updateChange,
+        selectJoin,
         alterTableAddColumn,
         alterTableForeignKey,
         connection
