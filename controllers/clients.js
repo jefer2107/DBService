@@ -1,13 +1,32 @@
-const querySqlServer = require("../querySqlserver")
+const DBSevice = require("../DBSevice")
 
 const factoryControllerClients = ()=>{
+    
     const options = {
-        route: 'clients',
-        orderBy: 'id'
+        table: 'clients',
+        orderBy: 'id' 
+    }
+
+    let dbService = DBSevice(options)
+
+    //Table
+
+    const createTable = (body)=>{
+        const columns = body.toString()
+        console.log('createTable columns :',columns)
+
+        return new Promise((res,rej)=>{
+            connection.query(`create table ${table}(${columns})`,(error,result)=>{
+
+                if(error) return rej(error)
+
+                return res(result)
+            })
+        })
     }
 
     const getAll = (req,res)=>{
-        querySqlServer(req).selectAll(options).then((result)=>{
+        dbService.selectAll().then((result)=>{
             res.status(200).send(result)
 
         }).catch((error)=>{
@@ -21,7 +40,7 @@ const factoryControllerClients = ()=>{
             values: [new Date(),req.body.name,req.body.age]
         }
 
-        querySqlServer(req).insert(options,body).then((result)=>{
+        dbService.insert(body).then((result)=>{
             res.status(200).send(result)
             
         }).catch((error)=>{
@@ -32,7 +51,9 @@ const factoryControllerClients = ()=>{
     }
 
     const getOne = (req,res)=>{
-        querySqlServer(req).selectOne(options).then((result)=>{
+        const id = req.params.id
+
+        dbService.selectOne(id).then((result)=>{
             res.status(200).send(result)
 
         }).catch((error)=>{
@@ -41,7 +62,9 @@ const factoryControllerClients = ()=>{
     }
 
     const removeItem = (req,res)=>{
-        querySqlServer(req).deleteItem(options).then((result)=>{
+        const id = req.params.id
+
+        dbService.deleteItem(id).then((result)=>{
             res.status(200).send(result)
 
         }).catch((error)=>{
@@ -50,12 +73,13 @@ const factoryControllerClients = ()=>{
     }
 
     const addForeignKey = (req,res)=>{
+        const id = req.params.id
         const body = {
             foreignKey: req.body.foreignKey,
             id: req.body.id
         }
 
-        querySqlServer(req).updateTableForeignKey(options,body).then((result)=>{
+        dbService.updateTableForeignKey(body,id).then((result)=>{
             res.status(200).send(result)
 
         }).catch((error)=>{
@@ -65,6 +89,7 @@ const factoryControllerClients = ()=>{
     }
 
     return{
+        createTable,
         getAll,
         create,
         getOne,

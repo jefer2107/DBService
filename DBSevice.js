@@ -1,21 +1,19 @@
 const mysql2 = require('mysql2')
 
-const querySqlServer = (req)=>{
-   
+const DBSevice = (options)=>{
+    const table = options.table
+
     const connection = mysql2.createConnection({
         host:'localhost',
         user:'root',
         database:'querySqlserver'
     })
 
-    const selectAll = (options)=>{
+    const selectAll = ()=>{
         return new Promise((res,rej)=>{
-            connection.query(`select * from ${options.route} order by ${options.orderBy}`,(error,result)=>{
-                if(error)
-                {
-                    return rej(error)
-                    
-                }
+            connection.query(`select * from ${table} order by ${options.orderBy}`,
+            (error,result)=>{                
+                if(error) return rej(error)
     
                 return res(result)
             })
@@ -23,12 +21,11 @@ const querySqlServer = (req)=>{
         
     }
 
-    const insert = (options,body)=>{
-        const route = options.route
-        const columns = body.columns
+    const insert = (data)=>{
+        const columns = data.columns
         const columnsStringify = JSON.stringify(columns)
         const setColumns = columnsStringify.replace("[","").replace("]","").replace(/"/g,"")
-        const values = body.values
+        const values = data.values
         let columnsLength = columns.length
 
         return new Promise((res,rej)=>{
@@ -47,111 +44,90 @@ const querySqlServer = (req)=>{
                 
                 if(columnsLength === count){
                     
-                    connection.query(`insert into ${route}(${setColumns})values(${setValues})`,
+                    connection.query(`insert into ${table}(${setColumns})values(${setValues})`,
                     values,(error,result)=>{
 
-                        if(error)
-                        {
-                            return rej(error)
-                        }
-        
+                        if(error) return rej(error)
+    
                         return res(result)
                     })
                 }
                 
             })
             
-            
         })
         
     }
 
-    const deleteItem = (options)=>{
-        const id = req.params.id
+    const deleteItem = (id)=>{
 
         return new Promise((res,rej)=>{
-            connection.query(`delete from ${options.route} where id=${id}`,(error,result)=>{
+            connection.query(`delete from ${table} where id=${id}`,
+            (error,result)=>{
 
-                if(error)
-                {
-                    return rej(error)
-                }
+                if(error) return rej(error)
     
                 return res(result)
             })
         })
     }
 
-    const selectOne = (options)=>{
-        const id = req.params.id
+    const selectOne = (id)=>{
         
         return new Promise((res,rej)=>{
-            connection.query(`select * from ${options.route} where id=${id}`,(error,result)=>{
+            connection.query(`select * from ${table} where id=${id}`,
+            (error,result)=>{
 
-                if(error)
-                {
-                    return rej(error)
-                }
+                if(error) return rej(error)
     
                 return res(result)
             })
         })
     }
 
-    const updateTableForeignKey = (options,body)=>{
-        const id = req.params.id
-        const route = options.route
+    const updateTableForeignKey = (body,id)=>{
         const foreignKey = body.foreignKey
         const idReference = body.id
 
         return new Promise((res,rej)=>{
-            connection.query(`update ${route} set ${foreignKey} = '${idReference}' where id ='${id}'`,(error,result)=>{
+            connection.query(`update ${table} set ${foreignKey} = '${idReference}' where id ='${id}'`,
+            (error,result)=>{
 
-                if(error)
-                {
-                    return rej(error)
-                }
-
+                if(error) return rej(error)
+    
                 return res(result)
             })
         })
         
     }
 
-    const alterTableAddColumn = (options,body)=>{
-        const route = options.route
+    const alterTableAddColumn = (body)=>{
         const column = body.column
         const position = body.position
 
         return new Promise((res,rej)=>{
-            connection.query(`alter table ${route} add column ${column} ${position}`,(error,result)=>{
+            connection.query(`alter table ${table} add column ${column} ${position}`,
+            (error,result)=>{
 
-                if(error)
-                {
-                    return rej(error)
-                }
-
+                if(error) return rej(error)
+    
                 return res(result)
             })
         })
         
     }
 
-    const alterTableForeignKey = (options,body)=>{
-        const route = options.route
+    const alterTableForeignKey = (body)=>{
         const foreignKey = body.foreignKey
         const references = body.references
         const field = body.field
 
         return new Promise((res,rej)=>{
-            connection.query(`alter table ${route} add foreign key(${foreignKey}) references ${references}${(field)}`,
+            connection.query(`alter table ${table} add foreign key(${foreignKey}) references ${references}${(field)}`,
             (error,result)=>{
 
-                if(error)
-                {
-                    return rej(error)
-                }
-
+                if(error) return rej(error)
+    
                 return res(result)
             })
         })
@@ -169,5 +145,5 @@ const querySqlServer = (req)=>{
     }
 }
 
-module.exports = querySqlServer
+module.exports = DBSevice
 

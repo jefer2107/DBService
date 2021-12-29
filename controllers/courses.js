@@ -1,13 +1,15 @@
-const querySqlServer = require("../querySqlserver")
+const DBSevice = require("../DBSevice")
 
 const factoryControllerCourses = ()=>{
     const options = {
-        route: 'courses',
+        table: 'courses',
         orderBy: 'id'
     }
 
+    let dbService = DBSevice(options)
+
     const getAll = (req,res)=>{
-        querySqlServer(req).selectAll(options).then((result)=>{
+        dbService.selectAll(options).then((result)=>{
             res.status(200).send(result)
 
         }).catch((error)=>{
@@ -21,7 +23,7 @@ const factoryControllerCourses = ()=>{
             values: [new Date(),req.body.name]
         }
 
-        querySqlServer(req).insert(options,body).then((result)=>{
+        dbService.insert(body).then((result)=>{
             res.status(200).send(result)
             
         }).catch((error)=>{
@@ -32,7 +34,9 @@ const factoryControllerCourses = ()=>{
     }
 
     const getOne = (req,res)=>{
-        querySqlServer(req).selectOne(options).then((result)=>{
+        const id = req.params.id
+
+        dbService.selectOne(id).then((result)=>{
             res.status(200).send(result)
 
         }).catch((error)=>{
@@ -41,7 +45,9 @@ const factoryControllerCourses = ()=>{
     }
 
     const removeItem = (req,res)=>{
-        querySqlServer(req).deleteItem(options).then((result)=>{
+        const id = req.params.id
+
+        dbService.deleteItem(id).then((result)=>{
             res.status(200).send(result)
 
         }).catch((error)=>{
