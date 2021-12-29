@@ -96,6 +96,47 @@ const factoryControllerClients = ()=>{
         })
     }
 
+    const createColumnForForeignKey = (body)=>{
+        const foreignKey = body.column.replace(" int","")
+        const newBody = {...body,foreignKey}
+        let resultAddColumn;
+        let resultTableForeignKey;
+
+        return new Promise(async(res,rej)=>{
+            const addColumn = await alterTableAddColumn(body)
+            .then((x)=>{
+                resultAddColumn = true
+                return x
+            })
+            .catch((error)=>{
+                resultAddColumn = false
+                return error
+            })
+
+            if(!resultAddColumn) return rej(addColumn)
+
+            if(resultAddColumn) {
+
+                const tableForeignKey = await alterTableForeignKey(newBody)
+                .then((x)=>{
+                    resultTableForeignKey = true
+                    return x
+                })
+                .catch((error)=>{
+                    resultTableForeignKey = false
+                    return error
+                })
+
+                if(!resultTableForeignKey) return rej(tableForeignKey)
+
+                return res(tableForeignKey)
+                
+            }
+            
+        })
+        
+    }
+
     const getAll = (req,res)=>{
         dbService.selectAll().then((result)=>{
             res.status(200).send(result)
@@ -166,6 +207,7 @@ const factoryControllerClients = ()=>{
         dropTable,
         alterTableAddColumn,
         alterTableForeignKey,
+        createColumnForForeignKey,
         getAll,
         create,
         getOne,
